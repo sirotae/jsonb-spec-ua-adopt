@@ -13,6 +13,7 @@ public class UseCaseCreate {
 
     @Test
     public void createStandardJsonb1() {
+
         Jsonb json = JsonbBuilder.create();
     }
 
