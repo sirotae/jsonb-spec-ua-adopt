@@ -1,4 +1,4 @@
-package myexamples;
+package ua.jug.json.bind.gsonri;
 
 import org.junit.Test;
 
@@ -6,7 +6,6 @@ import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
 import javax.json.bind.spi.JsonbProvider;
-import javax.json.spi.JsonProvider;
 
 /**
  * Created by sirotae on 2/22/2015.
