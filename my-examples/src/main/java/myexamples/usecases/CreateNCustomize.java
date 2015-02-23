@@ -4,7 +4,6 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import javax.json.*;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
@@ -31,7 +30,7 @@ public class CreateNCustomize {
 
 
     public void createCustomJsonbWithSeperateClass() {
-        // 1) who is main developer of new CustomJsonbBuilder - programmer or JSON-B SPI developer?
+        // 1) who is main developer of new CustomJsonbBuilder - programmer or JSON-B SPI developer? It should be SPI developer. So this code is not a case for usual programmer
         // 2) which special behavior should be implemented in CustomBuilder with methods withConfig, withProvider, build
         Jsonb json3 = new CustomJsonbBuilder().build();
     }

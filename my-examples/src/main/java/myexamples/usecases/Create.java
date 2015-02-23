@@ -13,12 +13,11 @@ import javax.json.spi.JsonProvider;
  */
 public class Create{
 
-    public void createStandardJsonbVariant1() {
+    public void createStandardJsonb() {
         Jsonb json3 = JsonbBuilder.create();
-
         Jsonb json4 = JsonbBuilder.newBuilder().build();
-
     }
+
     public void createGson() {
         Gson gson1 = new Gson();
         Gson gson2 = new GsonBuilder().create();
