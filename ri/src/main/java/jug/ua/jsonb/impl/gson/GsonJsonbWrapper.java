@@ -1,4 +1,4 @@
-package gson;
+package jug.ua.jsonb.impl.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -13,7 +13,7 @@ import java.nio.file.Files;
 
 /**
  * Wrapper over Gson class to provide JSON-B compatible implementations
- * of {@link Jsonb} interface
+ * of {@link javax.json.bind.Jsonb} interface
  *
  * @author Oleg Tsal-Tsalko
  */

@@ -1,4 +1,4 @@
-package gson;
+package jug.ua.jsonb.impl.gson;
 
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;

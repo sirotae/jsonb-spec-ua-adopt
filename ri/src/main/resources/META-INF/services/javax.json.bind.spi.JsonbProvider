@@ -1,1 +1,1 @@
-ua.jug.json.bind.gsonri.JsonbGsonProvider #JsonbProvider
+jug.ua.jsonb.impl.gson.spi.GsonJsonbProvider #JsonbProvider

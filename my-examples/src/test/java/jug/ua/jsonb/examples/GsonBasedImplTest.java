@@ -1,6 +1,5 @@
-package jsonb;
+package jug.ua.jsonb.examples;
 
-import gson.spi.GsonJsonbProvider;
 import org.junit.Test;
 
 import javax.json.bind.Jsonb;
@@ -16,11 +15,11 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Oleg Tsal-Tsalko
  */
-public class GsonImplTest {
+public class GsonBasedImplTest {
 
     @Test
     public void simpleTransformationBackAndForth() throws Exception {
-        Jsonb jsonb = JsonbBuilder.newBuilder(new GsonJsonbProvider())
+        Jsonb jsonb = JsonbBuilder.newBuilder()
                 .withConfig(new JsonbConfig().toJsonFormatting(true))
                 .build();
         String json = jsonb.toJson(new DomainObject());

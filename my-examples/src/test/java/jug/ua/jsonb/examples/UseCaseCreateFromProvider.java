@@ -1,4 +1,4 @@
-package ua.jug.json.bind.gsonri;
+package jug.ua.jsonb.examples;
 
 import org.junit.Test;
 
