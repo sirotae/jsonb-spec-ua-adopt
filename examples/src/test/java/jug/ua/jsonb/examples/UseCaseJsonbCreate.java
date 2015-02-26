@@ -10,24 +10,23 @@ import javax.json.bind.spi.JsonbProvider;
 /**
  * Created by sirotae on 2/22/2015.
  */
-public class UseCaseCreateFromProvider {
-
-    private final String PROVIDER = "ua.jug.json.bind.gsonri.JsonbGsonProvider";
+public class UseCaseJsonbCreate {
 
     @Test
-    public void createStandardJsonb1() {
-        JsonbBuilder builder = JsonbProvider.provider(PROVIDER).create();
+    public void createJsonbViaProvider() {
+        JsonbBuilder builder = JsonbProvider.provider().create();
         Jsonb jsonb = builder.build();
     }
 
     @Test
-    public void createStandardJsonb2() {
-        JsonbBuilder builder = JsonbBuilder.newBuilder(PROVIDER);
+    public void createJsonbViaBuilder() {
+        JsonbBuilder builder = JsonbBuilder.newBuilder();
         Jsonb jsonb = builder.build();
     }
 
-    public void createNCustomize() {
-        Jsonb json3 = JsonbBuilder.newBuilder(PROVIDER)
+    @Test
+    public void createJsonbViaBuilderWithConfig() {
+        Jsonb json3 = JsonbBuilder.newBuilder()
                 .withConfig(new JsonbConfig().toJsonFormatting(true))
                 .build();
     }
