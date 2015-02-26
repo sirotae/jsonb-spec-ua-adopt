@@ -1,4 +1,4 @@
-package jug.ua.jsonb.examples;
+package jug.ua.jsonb.examples.runtime_api;
 
 import org.junit.Test;
 
