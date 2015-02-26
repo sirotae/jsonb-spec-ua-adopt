@@ -21,15 +21,27 @@ public class GsonJsonbWrapper implements Jsonb{
 
     private Gson gson;
 
+    private static GsonBuilder newBuilderFromConfig (JsonbConfig config) {
+        GsonBuilder builder = new GsonBuilder();
+
+        Boolean pretty = (Boolean) config.getProperty(JsonbConfig.JSONB_TOJSON_FORMATTING);
+        if (pretty!=null && Boolean.TRUE.equals(pretty)){
+            builder.setPrettyPrinting();
+        }
+        return builder;
+    }
+
+
     public GsonJsonbWrapper(JsonbConfig config) {
         /*
         In nutshel GsonBuilder itself should be modified in order to incorporate JsonbConfig,
         however in POC purposes we will do simple but not less ugly remapping
          */
-        GsonBuilder builder = new GsonBuilder();
-        if (Boolean.TRUE.equals(config.getProperty(JsonbConfig.JSONB_TOJSON_FORMATTING))){
-            builder.setPrettyPrinting();
-        }
+        GsonBuilder builder = null;
+        if (config!=null)
+            builder = newBuilderFromConfig (config);
+        else
+            builder = new GsonBuilder();
         gson = builder.create();
     }
 
