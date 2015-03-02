@@ -96,29 +96,17 @@ public class PrimitivesMappingTest {
         assertEquals("1.25", js);
     }
 
+
     @Test
-    public void charFromJsonTest() {
-        char i = jsonb.fromJson("\"1\"", char.class);
-        assertEquals('1', i);
+    public void booleanFromJsonTest() {
+        boolean i = jsonb.fromJson("true", boolean.class);
+        assertEquals(true, i);
     }
 
     @Test
-    public void charToJsonTest() {
-        String js = jsonb.toJson('a');
-        assertEquals("\"a\"", js);
-    }
-
-
-    @Test
-    public void stringFromJsonTest() {
-        String i = jsonb.fromJson("\"String mapping\"", String.class);
-        assertEquals("String mapping", i);
-    }
-
-    @Test
-    public void stringToJsonTest() {
-        String js = jsonb.toJson("String mapping");
-        assertEquals("\"String mapping\"", js);
+    public void booleanToJsonTest() {
+        String js = jsonb.toJson(true);
+        assertEquals("true", js);
     }
 
 }
