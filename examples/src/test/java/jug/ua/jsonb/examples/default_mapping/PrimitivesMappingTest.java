@@ -109,4 +109,23 @@ public class PrimitivesMappingTest {
         assertEquals("true", js);
     }
 
+    @Test
+    public void nullFromJsonTest() {
+        Object val = jsonb.fromJson("null", Object.class);
+        assertEquals(null, val);
+    }
+
+    @Test
+    public void nullValueToJsonTest() {
+        String act = jsonb.toJson(null);
+        assertEquals("null", act);
+    }
+
+    @Test
+    public void nullRefToJsonTest() {
+        Object val = null;
+        String act = jsonb.toJson(val);
+        assertEquals("null", act);
+    }
+
 }

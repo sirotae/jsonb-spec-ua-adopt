@@ -31,8 +31,37 @@ public class ArraysMappingTest {
     @Test
     public void byteArrayToJsonTest() {
         byte[] value = {1, 2};
-        String js = jsonb.toJson(value);
-        assertEquals("[1,2]",js);
+        String act = jsonb.toJson(value);
+        assertEquals("[1,2]",act);
+    }
+
+    @Test
+    public void stringArrayFromJsonTest() {
+        String[] act = jsonb.fromJson("[\"string1\", \"string2\"]", String[].class);
+        String[] exp = {"string1","string2"};
+        assertArrayEquals(exp, act);
+    }
+
+    @Test
+    public void stringArrayToJsonTest() {
+        String[] value = {"string1","string2"};
+        String act = jsonb.toJson(value);
+        assertEquals("[\"string1\",\"string2\"]", act);
+    }
+
+
+    @Test
+    public void string2DimArrayFromJsonTest() {
+        String[][] act = jsonb.fromJson("[[\"string11\", \"string12\"],[\"string21\", \"string22\"]]", String[][].class);
+        String[][] exp = {{"string11","string12"},{"string21","string22"}};
+        assertArrayEquals(exp, act);
+    }
+
+    @Test
+    public void string2DimArrayToJsonTest() {
+        String[][] value = {{"string11","string12"},{"string21","string22"}};
+        String act = jsonb.toJson(value);
+        assertEquals("[[\"string11\",\"string12\"],[\"string21\",\"string22\"]]", act);
     }
 
 }
