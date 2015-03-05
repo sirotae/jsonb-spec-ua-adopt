@@ -5,12 +5,11 @@ import org.junit.Test;
 
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by sirotae on 3/5/2015.
@@ -24,9 +23,8 @@ public class ObjectMappingTest {
         jsonb = JsonbBuilder.create();
     }
 
-    @Test
-    public void mapFromJsonTest() {
-        Map<String, String> act = jsonb.fromJson("{\"name 1\":\"2\", \"name 2\":\"4\",\"name 3\":\"6\",\"name 4\":\"8\"}", Map.class);
+    public void objectAsMapFromJsonTest() {
+        Map<String, String> act = (Map)jsonb.fromJson("{\"name 1\":\"2\"}", Object.class);
         Map<String, String> exp = new LinkedHashMap();
         exp.put("name 1", "2");
         exp.put("name 2", "4");
@@ -35,46 +33,32 @@ public class ObjectMappingTest {
         assertEquals(exp, act);
     }
 
-    @Test
-    public void mapToJsonTest() {
-        Map<String, String> value = new LinkedHashMap();
-        value.put("name 1", "2");
-        value.put("name 2", "4");
-        value.put("name 3", "6");
-        value.put("name 4", "8");
-        String act = jsonb.toJson(value);
-        assertEquals("{\"name 1\":\"2\",\"name 2\":\"4\",\"name 3\":\"6\",\"name 4\":\"8\"}",act);
+    public void objectAsListFromJsonTest() {
+        List<String> act = (List)jsonb.fromJson("[\"value 1\", \"value 2\"]", Object.class);
+        List<String> exp = new ArrayList();
+        exp.add("value 1");
+        exp.add("value 2");
+        assertEquals(exp, act);
     }
 
     @Test
-    public void arrayOfMapsFromJsonTest() {
-        Map<String, String>[] act = jsonb.fromJson("[{\"name 1\":\"2\", \"name 2\":\"4\"},{\"name 3\":\"6\",\"name 4\":\"8\"}]", Map[].class);
-        Map<String, String> exp1 = new LinkedHashMap();
-        exp1.put("name 1", "2");
-        exp1.put("name 2", "4");
-
-        Map<String, String> exp2 = new LinkedHashMap();
-        exp2.put("name 3", "6");
-        exp2.put("name 4", "8");
-        Map[] exp = {exp1, exp2};
-        assertArrayEquals(exp, act);
+    public void nullFromJsonTest() {
+        Object val = jsonb.fromJson("null", Object.class);
+        assertEquals(null, val);
     }
 
     @Test
-    public void arrayOfMapsToJsonTest() {
-        Map<String, String> val1 = new LinkedHashMap();
-        val1.put("name 1", "2");
-        val1.put("name 2", "4");
-        Map<String, String> val2 = new LinkedHashMap();
-        val2.put("name 3", "6");
-        val2.put("name 4", "8");
-
-        Map[] value = {val1, val2};
-
-        String act = jsonb.toJson(value);
-        assertEquals("[{\"name 1\":\"2\",\"name 2\":\"4\"},{\"name 3\":\"6\",\"name 4\":\"8\"}]",act);
+    public void nullValueToJsonTest() {
+        String act = jsonb.toJson(null);
+        assertEquals("null", act);
     }
 
+    @Test
+    public void nullRefToJsonTest() {
+        Object val = null;
+        String act = jsonb.toJson(val);
+        assertEquals("null", act);
+    }
 
 
 }
