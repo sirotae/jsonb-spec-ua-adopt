@@ -33,7 +33,7 @@ public class PojoMappingTest {
     }
 
     @Test
-    public void pojoArrayToJsonTest() {
+    public void pojoToJsonTest() {
         POJO pojo = new POJO();
         pojo.setId(1);
         pojo.setName("pojoName");
@@ -41,6 +41,30 @@ public class PojoMappingTest {
         String act = jsonb.toJson(pojo);
         assertEquals("{\"id\":1,\"name\":\"pojoName\"}", act);
     }
+
+
+
+    @Test
+    public void inheritanceFromJsonTest() {
+        Dog dogExp = new Dog();
+        dogExp.setAge(1);
+        dogExp.setName("Dog");
+
+        Dog dogAct = jsonb.fromJson("{\"age\":1, \"name\":\"Dog\"}", Dog.class);
+        assertEquals(dogExp.getAge(),dogAct.getAge());
+        assertEquals(dogExp.getName(),dogAct.getName());
+    }
+
+    @Test
+    public void inheritanceToJsonTest() {
+        Dog pojo = new Dog();
+        pojo.setAge(1);
+        pojo.setName("Dog");
+
+        String act = jsonb.toJson(pojo);
+        assertEquals("{\"age\":1,\"name\":\"Dog\"}", act);
+    }
+
 
 
     private static class POJO {
@@ -80,6 +104,40 @@ public class PojoMappingTest {
         }
 
         //other supported attributes
+    }
+
+
+    public static class Animal {
+        private int age;
+
+        public Animal() {
+        }
+
+        public int getAge() {
+            return age;
+        }
+
+        public void setAge(int age) {
+            this.age = age;
+        }
+    }
+
+    public static class Dog extends Animal {
+        private String name;
+
+        public Dog() {
+            super();
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+
     }
 
 }

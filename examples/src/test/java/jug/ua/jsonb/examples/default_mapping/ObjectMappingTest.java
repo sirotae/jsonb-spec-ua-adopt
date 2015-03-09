@@ -23,16 +23,15 @@ public class ObjectMappingTest {
         jsonb = JsonbBuilder.create();
     }
 
+    @Test
     public void objectAsMapFromJsonTest() {
         Map<String, String> act = (Map)jsonb.fromJson("{\"name 1\":\"2\"}", Object.class);
         Map<String, String> exp = new LinkedHashMap();
         exp.put("name 1", "2");
-        exp.put("name 2", "4");
-        exp.put("name 3", "6");
-        exp.put("name 4", "8");
         assertEquals(exp, act);
     }
 
+    @Test
     public void objectAsListFromJsonTest() {
         List<String> act = (List)jsonb.fromJson("[\"value 1\", \"value 2\"]", Object.class);
         List<String> exp = new ArrayList();

@@ -100,74 +100,86 @@ public class StringMappingTest {
 
     @Test
     public void backspaceFromJsonTest() {
-        String actual = jsonb.fromJson("\"\b\"", String.class);
+        String actual = jsonb.fromJson("\"\\b\"", String.class);
         assertEquals("\b", actual);
     }
 
     @Test
     public void backspaceToJsonTest() {
         String actual = jsonb.toJson("\b");
-        assertEquals("\"\b\"", actual);
+        assertEquals("\"\\b\"", actual);
     }
 
     @Test
     public void formfeedFromJsonTest() {
-        String actual = jsonb.fromJson("\"\f\"", String.class);
+        String actual = jsonb.fromJson("\"\\f\"", String.class);
         assertEquals("\f", actual);
     }
 
     @Test
     public void formfeedToJsonTest() {
         String actual = jsonb.toJson("\f");
-        assertEquals("\"\f\"", actual);
+        assertEquals("\"\\f\"", actual);
     }
 
     @Test
     public void linefeedFromJsonTest() {
-        String actual = jsonb.fromJson("\"\n\"", String.class);
+        String actual = jsonb.fromJson("\"\\n\"", String.class);
         assertEquals("\n", actual);
     }
 
     @Test
     public void linefeedToJsonTest() {
         String actual = jsonb.toJson("\n");
-        assertEquals("\"\n\"", actual);
+        assertEquals("\"\\n\"", actual);
     }
 
     @Test
     public void carriageReturnFromJsonTest() {
-        String actual = jsonb.fromJson("\"\r\"", String.class);
+        String actual = jsonb.fromJson("\"\\r\"", String.class);
         assertEquals("\r", actual);
     }
 
     @Test
     public void carriageReturnToJsonTest() {
         String actual = jsonb.toJson("\r");
-        assertEquals("\"\r\"", actual);
+        assertEquals("\"\\r\"", actual);
     }
 
     @Test
     public void tabReturnFromJsonTest() {
-        String actual = jsonb.fromJson("\"\t\"", String.class);
+        String actual = jsonb.fromJson("\"\\t\"", String.class);
         assertEquals("\t", actual);
     }
 
     @Test
     public void tabReturnToJsonTest() {
         String actual = jsonb.toJson("\t");
-        assertEquals("\"\t\"", actual);
+        assertEquals("\"\\t\"", actual);
     }
 
     @Test
     public void hexCodeFromJsonTest() {
-        String actual = jsonb.fromJson("\"\u0039\"", String.class);
+        String actual = jsonb.fromJson("\"\\u0039\"", String.class);
         assertEquals("9", actual);
     }
 
     @Test
     public void hexCodeReturnToJsonTest() {
         String actual = jsonb.toJson("\u0039");
-        assertEquals("\"\u0039\"", actual);
+        assertEquals("\"9\"", actual);
+    }
+
+    @Test
+    public void fullEscapingFromJsonTest() {
+        String escapedString = jsonb.fromJson("\" \\\" \\\\ \\/ \\b \\f \\n \\r \\t \\u0039\"", String.class);
+        assertEquals(" \" \\ / \b \f \n \r \t 9", escapedString);
+    }
+
+    @Test
+    public void fullEscapingToJsonTest() {
+        String actual = jsonb.toJson(" \" \\ / \b \f \n \r \t \u0039");
+        assertEquals("\" \\\" \\\\ / \\b \\f \\n \\r \\t 9\"", actual);
     }
 
 }
