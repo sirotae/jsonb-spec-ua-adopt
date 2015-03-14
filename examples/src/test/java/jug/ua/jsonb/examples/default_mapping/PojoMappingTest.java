@@ -5,6 +5,9 @@ import org.junit.Test;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
@@ -57,7 +60,7 @@ public class PojoMappingTest {
     }
 
     @Test
-    public void compositeFromJsonTest() {
+    public void compositeOneToOneFromJsonTest() {
         OneToOneCompositeClass pojo = new OneToOneCompositeClass();
         InjectedClass injected = new InjectedClass();
         injected.setInjectedObjectField1("c1");
@@ -70,7 +73,7 @@ public class PojoMappingTest {
     }
 
     @Test
-    public void compositeToJsonTest() {
+    public void compositeOneToOneToJsonTest() {
         OneToOneCompositeClass pojo = new OneToOneCompositeClass();
         InjectedClass injected = new InjectedClass();
         injected.setInjectedObjectField1("c1");
@@ -80,6 +83,46 @@ public class PojoMappingTest {
 
         String act = jsonb.toJson(pojo);
         assertEquals("{\"field1\":1,\"injectedObject\":{\"injectedObjectField1\":\"c1\",\"injectedObjectField2\":\"c2\"}}", act);
+    }
+
+    @Test
+    public void compositeOneToManyFromJsonTest() {
+        OneToManyCompositeClass pojo = new OneToManyCompositeClass();
+
+        InjectedClass injected1 = new InjectedClass();
+        injected1.setInjectedObjectField1("c1");
+        injected1.setInjectedObjectField2("c2");
+
+        InjectedClass injected2 = new InjectedClass();
+        injected2.setInjectedObjectField1("c3");
+        injected2.setInjectedObjectField2("c4");
+
+        pojo.setField1(1);
+        pojo.addInjected(injected1);
+        pojo.addInjected(injected2);
+
+        OneToManyCompositeClass pojoAct = jsonb.fromJson("{\"field1\":1,\"injectedObjectList\":[{\"injectedObjectField1\":\"c1\",\"injectedObjectField2\":\"c2\"},{\"injectedObjectField1\":\"c3\",\"injectedObjectField2\":\"c4\"}]}", OneToManyCompositeClass.class);
+        assertEquals(pojo,pojoAct);
+    }
+
+    @Test
+    public void compositeOneToManyToJsonTest() {
+        OneToManyCompositeClass pojo = new OneToManyCompositeClass();
+
+        InjectedClass injected1 = new InjectedClass();
+        injected1.setInjectedObjectField1("c1");
+        injected1.setInjectedObjectField2("c2");
+
+        InjectedClass injected2 = new InjectedClass();
+        injected2.setInjectedObjectField1("c3");
+        injected2.setInjectedObjectField2("c4");
+
+        pojo.setField1(1);
+        pojo.addInjected(injected1);
+        pojo.addInjected(injected2);
+
+        String act = jsonb.toJson(pojo);
+        assertEquals("{\"field1\":1,\"injectedObjectList\":[{\"injectedObjectField1\":\"c1\",\"injectedObjectField2\":\"c2\"},{\"injectedObjectField1\":\"c3\",\"injectedObjectField2\":\"c4\"}]}", act);
     }
 
 
@@ -156,6 +199,43 @@ public class PojoMappingTest {
     }
 
 
+    public class InjectedClass {
+
+        private String injectedObjectField1;
+        private String injectedObjectField2;
+
+        public String getInjectedObjectField1() {
+            return injectedObjectField1;
+        }
+
+        public void setInjectedObjectField1(String injectedObjectField1) {
+            this.injectedObjectField1 = injectedObjectField1;
+        }
+
+        public String getInjectedObjectField2() {
+            return injectedObjectField2;
+        }
+
+        public void setInjectedObjectField2(String injectedObjectField2) {
+            this.injectedObjectField2 = injectedObjectField2;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            InjectedClass that = (InjectedClass) o;
+
+            if (injectedObjectField1 != null ? !injectedObjectField1.equals(that.injectedObjectField1) : that.injectedObjectField1 != null)
+                return false;
+            if (injectedObjectField2 != null ? !injectedObjectField2.equals(that.injectedObjectField2) : that.injectedObjectField2 != null)
+                return false;
+
+            return true;
+        }
+    }
+
     public static class OneToOneCompositeClass {
 
         private int field1;
@@ -191,25 +271,32 @@ public class PojoMappingTest {
         }
     }
 
-    public class InjectedClass {
 
-        private String injectedObjectField1;
-        private String injectedObjectField2;
+    public static class OneToManyCompositeClass {
 
-        public String getInjectedObjectField1() {
-            return injectedObjectField1;
+        private int field1;
+        private List<InjectedClass> injectedObjectList;
+
+        public int getField1() {
+            return field1;
         }
 
-        public void setInjectedObjectField1(String injectedObjectField1) {
-            this.injectedObjectField1 = injectedObjectField1;
+        public void setField1(int field1) {
+            this.field1 = field1;
         }
 
-        public String getInjectedObjectField2() {
-            return injectedObjectField2;
+        public List<InjectedClass> getInjectedObjectList() {
+            return injectedObjectList;
         }
 
-        public void setInjectedObjectField2(String injectedObjectField2) {
-            this.injectedObjectField2 = injectedObjectField2;
+        public void setInjectedObjectList(List<InjectedClass> injectedObjectList) {
+            this.injectedObjectList = injectedObjectList;
+        }
+
+        public void addInjected(InjectedClass c) {
+            if (injectedObjectList == null)
+                injectedObjectList = new ArrayList<>();
+            injectedObjectList.add(c);
         }
 
         @Override
@@ -217,11 +304,10 @@ public class PojoMappingTest {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
 
-            InjectedClass that = (InjectedClass) o;
+            OneToManyCompositeClass that = (OneToManyCompositeClass) o;
 
-            if (injectedObjectField1 != null ? !injectedObjectField1.equals(that.injectedObjectField1) : that.injectedObjectField1 != null)
-                return false;
-            if (injectedObjectField2 != null ? !injectedObjectField2.equals(that.injectedObjectField2) : that.injectedObjectField2 != null)
+            if (field1 != that.field1) return false;
+            if (injectedObjectList != null ? !injectedObjectList.equals(that.injectedObjectList) : that.injectedObjectList != null)
                 return false;
 
             return true;

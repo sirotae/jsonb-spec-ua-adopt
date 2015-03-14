@@ -90,7 +90,8 @@ public class StringMappingTest {
     @Test
     public void slashToJsonTest() {
         String actual = jsonb.toJson("/");
-        assertEquals("\"/\"", actual);
+        //this test is failed in gson implementation. slash should be escaped with \ in json value
+        assertEquals("\"\\/\"", actual);
     }
 
     @Test
