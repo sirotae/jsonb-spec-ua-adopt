@@ -1,6 +1,5 @@
 package jug.ua.jsonb.examples.default_mapping;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import javax.json.bind.Jsonb;
@@ -14,13 +13,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class PojoMappingTest {
 
-    Jsonb jsonb;
-
-    @Before
-    public void init() {
-        jsonb = JsonbBuilder.create();
-    }
-
+    Jsonb jsonb = JsonbBuilder.create();
 
     @Test
     public void pojoFromJsonTest() {
@@ -41,8 +34,6 @@ public class PojoMappingTest {
         String act = jsonb.toJson(pojo);
         assertEquals("{\"id\":1,\"name\":\"pojoName\"}", act);
     }
-
-
 
     @Test
     public void inheritanceFromJsonTest() {
@@ -65,28 +56,30 @@ public class PojoMappingTest {
         assertEquals("{\"subclassField1\":\"Dog\",\"superclassField1\":1}", act);
     }
 
+    @Test
     public void compositeFromJsonTest() {
-        ClassWithOneToOneComposite pojo = new ClassWithOneToOneComposite();
-        Composited composited = new Composited();
-        composited.setCompositedField1("c1");
-        composited.setCompositedField2("c2");
+        OneToOneCompositeClass pojo = new OneToOneCompositeClass();
+        InjectedClass injected = new InjectedClass();
+        injected.setInjectedObjectField1("c1");
+        injected.setInjectedObjectField2("c2");
         pojo.setField1(1);
-        pojo.setComposited(composited);
+        pojo.setInjectedObject(injected);
 
-        POJO pojoAct = jsonb.fromJson("{\"field1\":1, \"composited\": {\"compositedField1\":\"c1\", \"compositedField2\":\"c2\"}}", POJO.class);
+        OneToOneCompositeClass pojoAct = jsonb.fromJson("{\"field1\":1, \"injectedObject\": {\"injectedObjectField1\":\"c1\", \"injectedObjectField2\":\"c2\"}}", OneToOneCompositeClass.class);
         assertEquals(pojo,pojoAct);
     }
 
+    @Test
     public void compositeToJsonTest() {
-        ClassWithOneToOneComposite pojo = new ClassWithOneToOneComposite();
-        Composited composited = new Composited();
-        composited.setCompositedField1("c1");
-        composited.setCompositedField2("c2");
+        OneToOneCompositeClass pojo = new OneToOneCompositeClass();
+        InjectedClass injected = new InjectedClass();
+        injected.setInjectedObjectField1("c1");
+        injected.setInjectedObjectField2("c2");
         pojo.setField1(1);
-        pojo.setComposited(composited);
+        pojo.setInjectedObject(injected);
 
         String act = jsonb.toJson(pojo);
-        assertEquals("{\"field1\":1, \"composited\": {\"compositedField1\":\"c1\", \"compositedField2\":\"c2\"}}", act);
+        assertEquals("{\"field1\":1,\"injectedObject\":{\"injectedObjectField1\":\"c1\",\"injectedObjectField2\":\"c2\"}}", act);
     }
 
 
@@ -163,9 +156,10 @@ public class PojoMappingTest {
     }
 
 
-    public static class ClassWithOneToOneComposite {
+    public static class OneToOneCompositeClass {
+
         private int field1;
-        private Composited composited;
+        private InjectedClass injectedObject;
 
         public int getField1() {
             return field1;
@@ -175,12 +169,12 @@ public class PojoMappingTest {
             this.field1 = field1;
         }
 
-        public Composited getComposited() {
-            return composited;
+        public InjectedClass getInjectedObject() {
+            return injectedObject;
         }
 
-        public void setComposited(Composited composited) {
-            this.composited = composited;
+        public void setInjectedObject(InjectedClass injectedObject) {
+            this.injectedObject = injectedObject;
         }
 
         @Override
@@ -188,33 +182,34 @@ public class PojoMappingTest {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
 
-            ClassWithOneToOneComposite that = (ClassWithOneToOneComposite) o;
+            OneToOneCompositeClass that = (OneToOneCompositeClass) o;
 
             if (field1 != that.field1) return false;
-            if (composited != null ? !composited.equals(that.composited) : that.composited != null) return false;
+            if (injectedObject != null ? !injectedObject.equals(that.injectedObject) : that.injectedObject != null) return false;
 
             return true;
         }
     }
 
-    public class Composited {
-        private String compositedField1;
-        private String compositedField2;
+    public class InjectedClass {
 
-        public String getCompositedField1() {
-            return compositedField1;
+        private String injectedObjectField1;
+        private String injectedObjectField2;
+
+        public String getInjectedObjectField1() {
+            return injectedObjectField1;
         }
 
-        public void setCompositedField1(String compositedField1) {
-            this.compositedField1 = compositedField1;
+        public void setInjectedObjectField1(String injectedObjectField1) {
+            this.injectedObjectField1 = injectedObjectField1;
         }
 
-        public String getCompositedField2() {
-            return compositedField2;
+        public String getInjectedObjectField2() {
+            return injectedObjectField2;
         }
 
-        public void setCompositedField2(String compositedField2) {
-            this.compositedField2 = compositedField2;
+        public void setInjectedObjectField2(String injectedObjectField2) {
+            this.injectedObjectField2 = injectedObjectField2;
         }
 
         @Override
@@ -222,11 +217,11 @@ public class PojoMappingTest {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
 
-            Composited that = (Composited) o;
+            InjectedClass that = (InjectedClass) o;
 
-            if (compositedField1 != null ? !compositedField1.equals(that.compositedField1) : that.compositedField1 != null)
+            if (injectedObjectField1 != null ? !injectedObjectField1.equals(that.injectedObjectField1) : that.injectedObjectField1 != null)
                 return false;
-            if (compositedField2 != null ? !compositedField2.equals(that.compositedField2) : that.compositedField2 != null)
+            if (injectedObjectField2 != null ? !injectedObjectField2.equals(that.injectedObjectField2) : that.injectedObjectField2 != null)
                 return false;
 
             return true;

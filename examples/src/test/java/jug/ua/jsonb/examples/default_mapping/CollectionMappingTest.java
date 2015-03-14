@@ -17,17 +17,12 @@ import static org.junit.Assert.assertEquals;
  */
 public class CollectionMappingTest {
 
-    Jsonb jsonb;
-
-    @Before
-    public void init() {
-        jsonb = JsonbBuilder.create();
-    }
+    Jsonb jsonb = JsonbBuilder.create();
 
     @Test
     public void mapFromJsonTest() {
         Map<String, String> act = jsonb.fromJson("{\"name 1\":\"2\", \"name 2\":\"4\",\"name 3\":\"6\",\"name 4\":\"8\"}", Map.class);
-        Map<String, String> exp = new LinkedHashMap();
+        Map<String, String> exp = new LinkedHashMap<>();
         exp.put("name 1", "2");
         exp.put("name 2", "4");
         exp.put("name 3", "6");
@@ -37,7 +32,7 @@ public class CollectionMappingTest {
 
     @Test
     public void mapToJsonTest() {
-        Map<String, String> value = new LinkedHashMap();
+        Map<String, String> value = new LinkedHashMap<>();
         value.put("name 1", "2");
         value.put("name 2", "4");
         value.put("name 3", "6");
@@ -49,7 +44,7 @@ public class CollectionMappingTest {
     @Test
     public void listFromJsonTest() {
         List<String> act = jsonb.fromJson("[\"name 1\", \"name 2\"]", List.class);
-        List<String> exp = new ArrayList();
+        List<String> exp = new ArrayList<>();
         exp.add("name 1");
         exp.add("name 2");
         assertEquals(exp, act);
@@ -57,7 +52,7 @@ public class CollectionMappingTest {
 
     @Test
     public void listToJsonTest() {
-        List<String> value = new ArrayList();
+        List<String> value = new ArrayList<>();
         value.add("name 1");
         value.add("name 2");
         String act = jsonb.toJson(value);

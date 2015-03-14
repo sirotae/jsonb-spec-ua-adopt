@@ -14,12 +14,7 @@ import static org.junit.Assert.assertEquals;
 
 public class PrimitivesMappingTest {
 
-    Jsonb jsonb;
-
-    @Before
-    public void init() {
-        jsonb = JsonbBuilder.create();
-    }
+    Jsonb jsonb = JsonbBuilder.create();
 
     @Test
     public void byteFromJsonTest() {

@@ -14,12 +14,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class StringMappingTest {
 
-    Jsonb jsonb;
-
-    @Before
-    public void init() {
-        jsonb = JsonbBuilder.create();
-    }
+    Jsonb jsonb = JsonbBuilder.create();
 
     @Test
     public void charFromJsonTest() {
@@ -95,7 +90,7 @@ public class StringMappingTest {
     @Test
     public void slashToJsonTest() {
         String actual = jsonb.toJson("/");
-        assertEquals("\"\\/\"", actual);
+        assertEquals("\"/\"", actual);
     }
 
     @Test

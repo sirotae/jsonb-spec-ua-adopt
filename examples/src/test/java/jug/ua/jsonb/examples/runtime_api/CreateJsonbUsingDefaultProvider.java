@@ -12,18 +12,20 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Created by sirotae on 2/22/2015.
  */
-public class UseCaseJsonbCreate {
+public class CreateJsonbUsingDefaultProvider {
 
     @Test
     public void createJsonbViaProvider() {
         JsonbBuilder builder = JsonbProvider.provider().create();
         Jsonb jsonb = builder.build();
+        assertNotNull(jsonb);
     }
 
     @Test
     public void createJsonbViaBuilder() {
         JsonbBuilder builder = JsonbBuilder.newBuilder();
         Jsonb jsonb = builder.build();
+        assertNotNull(jsonb);
     }
 
     @Test
@@ -35,9 +37,10 @@ public class UseCaseJsonbCreate {
 
     @Test
     public void createJsonbViaBuilderWithConfig() {
-        Jsonb json3 = JsonbBuilder.newBuilder()
+        Jsonb jsonb = JsonbBuilder.newBuilder()
                 .withConfig(new JsonbConfig().toJsonFormatting(true))
                 .build();
+        assertNotNull(jsonb);
     }
 
 }

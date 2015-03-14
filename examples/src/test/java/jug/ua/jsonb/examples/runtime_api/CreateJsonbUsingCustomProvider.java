@@ -1,5 +1,6 @@
 package jug.ua.jsonb.examples.runtime_api;
 
+import jug.ua.jsonb.impl.gson.spi.GsonJsonbProvider;
 import org.junit.Test;
 
 import javax.json.bind.Jsonb;
@@ -13,12 +14,12 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Created by sirotae on 2/26/2015.
  */
-public class UseCaseJsonbProviderLoad {
+public class CreateJsonbUsingCustomProvider {
 
     private final String PROVIDER = "jug.ua.jsonb.impl.gson.spi.GsonJsonbProvider";
 
     @Test
-    public void createProviderFromUnderlyingRI() {
+    public void testProviderLookupFromClasspath() {
         JsonbProvider provider = JsonbProvider.provider();
         assertEquals(provider.getClass().getName(),PROVIDER);
     }
@@ -29,5 +30,15 @@ public class UseCaseJsonbProviderLoad {
         assertNotNull(provider);
     }
 
+    @Test
+    public void createJsonbUsingCustomProvider() {
+        Jsonb jsonb = JsonbBuilder.newBuilder(PROVIDER).build();
+        assertNotNull(jsonb);
+    }
 
+    @Test
+    public void createJsonbUsingExplicitlyCreatedCustomProvider() {
+        Jsonb jsonb = JsonbBuilder.newBuilder(new GsonJsonbProvider()).build();
+        assertNotNull(jsonb);
+    }
 }

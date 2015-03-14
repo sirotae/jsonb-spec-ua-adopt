@@ -17,12 +17,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class ArraysMappingTest {
 
-    Jsonb jsonb;
-
-    @Before
-    public void init() {
-        jsonb = JsonbBuilder.create();
-    }
+    Jsonb jsonb = JsonbBuilder.create();
 
     @Test
     public void byteArrayFromJsonTest() {
@@ -70,11 +65,11 @@ public class ArraysMappingTest {
     @Test
     public void arrayOfMapsFromJsonTest() {
         Map<String, String>[] act = jsonb.fromJson("[{\"name 1\":\"2\", \"name 2\":\"4\"},{\"name 3\":\"6\",\"name 4\":\"8\"}]", Map[].class);
-        Map<String, String> exp1 = new LinkedHashMap();
+        Map<String, String> exp1 = new LinkedHashMap<>();
         exp1.put("name 1", "2");
         exp1.put("name 2", "4");
 
-        Map<String, String> exp2 = new LinkedHashMap();
+        Map<String, String> exp2 = new LinkedHashMap<>();
         exp2.put("name 3", "6");
         exp2.put("name 4", "8");
         Map[] exp = {exp1, exp2};
@@ -83,10 +78,10 @@ public class ArraysMappingTest {
 
     @Test
     public void arrayOfMapsToJsonTest() {
-        Map<String, String> val1 = new LinkedHashMap();
+        Map<String, String> val1 = new LinkedHashMap<>();
         val1.put("name 1", "2");
         val1.put("name 2", "4");
-        Map<String, String> val2 = new LinkedHashMap();
+        Map<String, String> val2 = new LinkedHashMap<>();
         val2.put("name 3", "6");
         val2.put("name 4", "8");
 

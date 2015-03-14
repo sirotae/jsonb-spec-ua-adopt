@@ -16,48 +16,23 @@ import static org.junit.Assert.assertTrue;
  */
 public class ObjectMappingTest {
 
-    Jsonb jsonb;
-
-    @Before
-    public void init() {
-        jsonb = JsonbBuilder.create();
-    }
+    Jsonb jsonb = JsonbBuilder.create();
 
     @Test
     public void objectAsMapFromJsonTest() {
-        Map<String, String> act = (Map)jsonb.fromJson("{\"name 1\":\"2\"}", Object.class);
-        Map<String, String> exp = new LinkedHashMap();
+        Map<String, String> act = (Map<String, String>)jsonb.fromJson("{\"name 1\":\"2\"}", Object.class);
+        Map<String, String> exp = new LinkedHashMap<>();
         exp.put("name 1", "2");
         assertEquals(exp, act);
     }
 
     @Test
     public void objectAsListFromJsonTest() {
-        List<String> act = (List)jsonb.fromJson("[\"value 1\", \"value 2\"]", Object.class);
-        List<String> exp = new ArrayList();
+        List<String> act = (List<String>)jsonb.fromJson("[\"value 1\", \"value 2\"]", Object.class);
+        List<String> exp = new ArrayList<>();
         exp.add("value 1");
         exp.add("value 2");
         assertEquals(exp, act);
     }
-
-    @Test
-    public void nullFromJsonTest() {
-        Object val = jsonb.fromJson("null", Object.class);
-        assertEquals(null, val);
-    }
-
-    @Test
-    public void nullValueToJsonTest() {
-        String act = jsonb.toJson(null);
-        assertEquals("null", act);
-    }
-
-    @Test
-    public void nullRefToJsonTest() {
-        Object val = null;
-        String act = jsonb.toJson(val);
-        assertEquals("null", act);
-    }
-
 
 }

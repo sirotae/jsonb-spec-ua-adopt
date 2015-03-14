@@ -31,19 +31,6 @@
             <version>1.0</version>
             <scope>provided</scope>
         </dependency>
-        <!--JSON-P RI-->
-        <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.json</artifactId>
-            <version>1.0.4</version>
-            <scope>runtime</scope>
-        </dependency>
-        <!--Google GSON library-->
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.3.1</version>
-        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
