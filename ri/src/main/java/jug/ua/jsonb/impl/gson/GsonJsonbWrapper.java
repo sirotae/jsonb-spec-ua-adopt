@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
+import javax.json.*;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbConfig;
 import javax.json.bind.JsonbException;
@@ -48,8 +49,13 @@ public class GsonJsonbWrapper implements Jsonb{
     @Override
     public <T> T fromJson(String str, Class<T> type) throws JsonbException {
         try {
-            return gson.fromJson(str, type);
-        } catch (JsonSyntaxException ex){
+            if (JsonValue.class.isAssignableFrom(type)){
+                JsonReader jsonReader = Json.createReader(new StringReader(str));
+                return (T)jsonReader.read();
+            }else {
+                return gson.fromJson(str, type);
+            }
+        } catch (JsonSyntaxException | IllegalArgumentException ex){
             throw new JsonbException("JSON not compatible with specified type:", ex);
         }
     }
@@ -60,7 +66,7 @@ public class GsonJsonbWrapper implements Jsonb{
             return gson.fromJson(reader, type);
         } catch (JsonIOException io){
             throw new JsonbException("Error occurred while reading the file:", io);
-        } catch (JsonSyntaxException ex){
+        } catch (JsonSyntaxException | IllegalArgumentException ex){
             throw new JsonbException("JSON not compatible with specified type:", ex);
         }
     }
@@ -101,6 +107,10 @@ public class GsonJsonbWrapper implements Jsonb{
     @Override
     public void toJson(Object object, OutputStream stream) throws JsonbException {
         gson.toJson(object, new OutputStreamWriter(stream));
+    }
+
+    public static void main(String[] args){
+        System.out.println(JsonStructure.class.isAssignableFrom(JsonObject.class));
     }
 
 }
