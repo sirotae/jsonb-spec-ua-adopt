@@ -1,5 +1,6 @@
 package jug.ua.jsonb.examples.default_mapping;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.json.bind.Jsonb;
@@ -34,6 +35,34 @@ public class ExceptionsTest {
     @Test(expected = JsonbException.class)
     public void valueOutOfRange() throws Exception {
         jsonb.fromJson("["+new Integer(Byte.MAX_VALUE + 1)+"]", Byte.class);
+    }
+
+    @Ignore("Gson allows absence of default constructor")
+    @Test(expected = JsonbException.class)
+    public void pojoWithoutDefaultConstructor() throws Exception {
+        POJOWithoutDefaultConstructor pojo = jsonb.fromJson("{\"id\":\"1\"}", POJOWithoutDefaultConstructor.class);
+    }
+
+    @Ignore("Gson allows private constructor")
+    @Test(expected = JsonbException.class)
+    public void pojoWithPrivateConstructor() throws Exception {
+        POJOWithPrivateConstructor pojo = jsonb.fromJson("{\"id\":\"1\"}", POJOWithPrivateConstructor.class);
+    }
+
+    static class POJOWithoutDefaultConstructor {
+
+        private int id;
+
+        POJOWithoutDefaultConstructor(int id) {
+            this.id = id;
+        }
+    }
+
+    static class POJOWithPrivateConstructor {
+        private String id;
+
+        private POJOWithPrivateConstructor() {
+        }
     }
 
 }

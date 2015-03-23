@@ -1,5 +1,6 @@
 package jug.ua.jsonb.examples.default_mapping;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.json.bind.Jsonb;
@@ -8,7 +9,6 @@ import javax.json.bind.JsonbBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -28,6 +28,7 @@ public class PojoMappingTest {
         assertEquals(pojoExp,pojoAct);
     }
 
+    @Ignore("Gson supports different fields ordering")
     @Test
     public void pojoToJsonTest() {
         POJO pojo = new POJO();
@@ -127,8 +128,8 @@ public class PojoMappingTest {
 
 
     private static class POJO {
-        private Integer id;
         private String name;
+        private Integer id;
 
         public POJO() {
         }

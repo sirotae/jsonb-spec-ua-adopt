@@ -3,13 +3,11 @@ package jug.ua.jsonb.examples.default_mapping;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonStructure;
-import javax.json.JsonValue;
+import javax.json.*;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -42,6 +40,33 @@ public class JsonpStructuresTest {
     public void fromJsonValue() throws Exception {
         JsonValue jsonValue = jsonb.fromJson("1", JsonValue.class);
         assertNotNull(jsonValue);
+    }
+
+    @Test
+    public void toJsonObject() throws Exception {
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonObject jsonObject = factory.createObjectBuilder().
+                add("name", "home").
+                add("city", "Prague")
+                .build();
+        assertEquals("{\"name\":\"home\",\"city\":\"Prague\"}", jsonb.toJson(jsonObject));
+    }
+
+    @Test
+    public void toJsonArrayOrStructure() throws Exception {
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonObject jsonObject = factory.createObjectBuilder().
+                add("name", "home").
+                add("city", "Prague")
+                .build();
+        JsonArray jsonArray = factory.createArrayBuilder().add(jsonObject).add(jsonObject).build();
+        assertEquals("[{\"name\":\"home\",\"city\":\"Prague\"},{\"name\":\"home\",\"city\":\"Prague\"}]", jsonb.toJson(jsonArray));
+        assertEquals("[{\"name\":\"home\",\"city\":\"Prague\"},{\"name\":\"home\",\"city\":\"Prague\"}]", jsonb.toJson((JsonStructure)jsonArray));
+    }
+
+    @Test
+    public void toJsonValue() throws Exception {
+        assertEquals("true", jsonb.toJson(JsonValue.TRUE));
     }
 
 }
