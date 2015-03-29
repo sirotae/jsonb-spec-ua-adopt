@@ -11,6 +11,7 @@ import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbConfig;
 import javax.json.bind.JsonbException;
 import java.io.*;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -28,7 +29,7 @@ public class GsonJsonbWrapper implements Jsonb{
     private static GsonBuilder newBuilderFromConfig (JsonbConfig config) {
         GsonBuilder builder = new GsonBuilder();
 
-        Boolean pretty = (Boolean) config.getProperty(JsonbConfig.JSONB_TOJSON_FORMATTING);
+        Boolean pretty = (Boolean) config.getProperty(JsonbConfig.JSONB_TO_JSON_FORMATTING);
         if (pretty!=null && Boolean.TRUE.equals(pretty)){
             builder.setPrettyPrinting();
         }
@@ -67,6 +68,20 @@ public class GsonJsonbWrapper implements Jsonb{
     }
 
     @Override
+    public <T> T fromJson(String str, Type type) throws JsonbException {
+        try {
+            if (JsonValue.class.isAssignableFrom(TypeToken.get(type).getRawType())){
+                JsonReader jsonReader = Json.createReader(new StringReader(str));
+                return (T)jsonReader.read();
+            }else {
+                return gson.fromJson(str, type);
+            }
+        } catch (JsonSyntaxException | IllegalArgumentException ex){
+            throw new JsonbException("JSON not compatible with specified type:", ex);
+        }
+    }
+
+    @Override
     public <T> T fromJson(Reader reader, Class<T> type) throws JsonbException {
         try{
             return gson.fromJson(reader, type);
@@ -94,9 +109,18 @@ public class GsonJsonbWrapper implements Jsonb{
     @Override
     public String toJson(Object object) throws JsonbException {
         if (object instanceof JsonValue){
-            return ((JsonValue)object).toString();
+            return object.toString();
         }else{
             return gson.toJson(object);
+        }
+    }
+
+    @Override
+    public String toJson(Object object, Type type) throws JsonbException {
+        if (object instanceof JsonValue){
+            return object.toString();
+        }else{
+            return gson.toJson(object, type);
         }
     }
 
