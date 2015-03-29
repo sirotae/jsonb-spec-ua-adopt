@@ -1,16 +1,19 @@
 package jug.ua.jsonb.impl.gson;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonWriter;
 
-import javax.json.*;
+import javax.json.Json;
+import javax.json.JsonReader;
+import javax.json.JsonValue;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbConfig;
 import javax.json.bind.JsonbException;
 import java.io.*;
 import java.nio.file.Files;
+import java.util.Optional;
+import java.util.OptionalInt;
 
 /**
  * Wrapper over Gson class to provide JSON-B compatible implementations
@@ -43,7 +46,10 @@ public class GsonJsonbWrapper implements Jsonb{
             builder = newBuilderFromConfig (config);
         else
             builder = new GsonBuilder();
-        gson = builder.create();
+
+        gson = builder
+               .registerTypeAdapterFactory(this::customTypeAdapterForOptional)
+               .create();
     }
 
     @Override
@@ -87,7 +93,11 @@ public class GsonJsonbWrapper implements Jsonb{
 
     @Override
     public String toJson(Object object) throws JsonbException {
-        return gson.toJson(object);
+        if (object instanceof JsonValue){
+            return ((JsonValue)object).toString();
+        }else{
+            return gson.toJson(object);
+        }
     }
 
     @Override
@@ -109,8 +119,73 @@ public class GsonJsonbWrapper implements Jsonb{
         gson.toJson(object, new OutputStreamWriter(stream));
     }
 
-    public static void main(String[] args){
-        System.out.println(JsonStructure.class.isAssignableFrom(JsonObject.class));
+    private <T> TypeAdapter<T> customTypeAdapterForOptional(Gson gson, TypeToken<T> type) {
+        if (type.getRawType() == Optional.class){
+            return new OptionalTypeAdapter(gson);
+        }else if (type.getRawType() == OptionalInt.class){
+            return (TypeAdapter<T>)new OptionalIntTypeAdapter(gson);
+        }else{
+            return null;
+        }
+    }
+
+    static class OptionalTypeAdapter<T> extends TypeAdapter<Optional<T>>{
+
+        private Gson gson;
+
+        OptionalTypeAdapter(Gson gson) {
+            this.gson = gson;
+        }
+
+        @Override
+        public void write(JsonWriter out, Optional<T> value) throws IOException {
+            if (value != null && value.isPresent()) {
+                TypeAdapter<T> typeAdapter = gson.getAdapter(new TypeToken<T>() {});
+                typeAdapter.write(out, value.get());
+            }else{
+                out.nullValue();
+            }
+        }
+
+        @Override
+        public Optional<T> read(com.google.gson.stream.JsonReader in) throws IOException {
+            TypeAdapter<T> typeAdapter = gson.getAdapter(new TypeToken<T>() {});
+            T object = typeAdapter.read(in);
+            if (object == null) {
+                return Optional.empty();
+            } else {
+                return Optional.of(object);
+            }
+        }
+    }
+
+    static class OptionalIntTypeAdapter extends TypeAdapter<OptionalInt>{
+
+        private Gson gson;
+
+        OptionalIntTypeAdapter(Gson gson) {
+            this.gson = gson;
+        }
+
+        @Override
+        public void write(JsonWriter out, OptionalInt value) throws IOException {
+            if (value != null && value.isPresent()) {
+                gson.getAdapter(int.class).write(out, value.getAsInt());
+            }else{
+                out.nullValue();
+            }
+        }
+
+        @Override
+        public OptionalInt read(com.google.gson.stream.JsonReader in) throws IOException {
+            TypeAdapter<Integer> typeAdapter = gson.getAdapter(int.class);
+            Integer object = typeAdapter.read(in);
+            if (object == null) {
+                return OptionalInt.empty();
+            } else {
+                return OptionalInt.of(object);
+            }
+        }
     }
 
 }
