@@ -25,7 +25,7 @@ public class PojoMappingTest {
         pojoExp.setName("pojoName");
 
         POJO pojoAct = jsonb.fromJson("{\"id\":1, \"name\":\"pojoName\"}", POJO.class);
-        assertEquals(pojoExp,pojoAct);
+        assertEquals(pojoExp, pojoAct);
     }
 
     @Test
@@ -45,8 +45,8 @@ public class PojoMappingTest {
         exp.setSubclassField1("Dog");
 
         SubClass act = jsonb.fromJson("{\"superclassField1\":1, \"subclassField1\":\"Dog\"}", SubClass.class);
-        assertEquals(exp.getSubclassField1(),act.getSubclassField1());
-        assertEquals(exp.getSuperclassField1(),act.getSuperclassField1());
+        assertEquals(exp.getSubclassField1(), act.getSubclassField1());
+        assertEquals(exp.getSuperclassField1(), act.getSuperclassField1());
     }
 
     @Test
@@ -69,7 +69,7 @@ public class PojoMappingTest {
         pojo.setInjectedObject(injected);
 
         OneToOneCompositeClass pojoAct = jsonb.fromJson("{\"field1\":1, \"injectedObject\": {\"injectedObjectField1\":\"c1\", \"injectedObjectField2\":\"c2\"}}", OneToOneCompositeClass.class);
-        assertEquals(pojo,pojoAct);
+        assertEquals(pojo, pojoAct);
     }
 
     @Test
@@ -102,7 +102,7 @@ public class PojoMappingTest {
         pojo.addInjected(injected2);
 
         OneToManyCompositeClass pojoAct = jsonb.fromJson("{\"field1\":1,\"injectedObjectList\":[{\"injectedObjectField1\":\"c1\",\"injectedObjectField2\":\"c2\"},{\"injectedObjectField1\":\"c3\",\"injectedObjectField2\":\"c4\"}]}", OneToManyCompositeClass.class);
-        assertEquals(pojo,pojoAct);
+        assertEquals(pojo, pojoAct);
     }
 
     @Test
@@ -125,6 +125,23 @@ public class PojoMappingTest {
         assertEquals("{\"field1\":1,\"injectedObjectList\":[{\"injectedObjectField1\":\"c1\",\"injectedObjectField2\":\"c2\"},{\"injectedObjectField1\":\"c3\",\"injectedObjectField2\":\"c4\"}]}", act);
     }
 
+    @Test
+    public void anonymousToJsonTest() {
+
+        String act = jsonb.toJson(new POJO() {
+            @Override
+            public Integer getId () {
+                return 1;
+            }
+
+            @Override
+            public String getName () {
+                return "pojoName";
+            }
+        });
+
+        assertEquals("{\"id\":1,\"name\":\"pojoName\"}",act);
+    }
 
     private static class POJO {
         private Integer id;
