@@ -16,6 +16,9 @@ import static org.junit.Assert.fail;
 
 /**
  * Created by Olena_Syrota on 4/19/2015.
+ *
+ * scenario
+ * - demonstrate different exceptions for not well formed json
  */
 public class Case3Exceptions {
 

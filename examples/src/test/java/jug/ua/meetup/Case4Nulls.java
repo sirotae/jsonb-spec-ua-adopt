@@ -18,7 +18,7 @@ import static org.junit.Assert.assertEquals;
  *
  * scenario:
  *   deserializing null to primitive
- *   -
+ *   - jackson can fail on nulls
  */
 public class Case4Nulls {
 
