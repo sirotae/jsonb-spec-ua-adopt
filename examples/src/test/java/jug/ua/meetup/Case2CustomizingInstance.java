@@ -15,7 +15,8 @@ import static jug.ua.meetup.POJO.Book;
  * Created by Olena_Syrota on 4/18/2015.
  *
  * scenario:
- *  create custom mapper instance via builder
+ *  - create custom mapper instance via builder
+ *      jackson - builder pattern is not used
  *  - oops, "pretty" notion is different
  *
  */
