@@ -39,23 +39,17 @@ public class Case2CustomizingInstance {
     public void indentedSerializationExample() throws Exception {
         Book book = new Book("Super Book", "Super Author");
 
-        String expGson =
+        String expOrdered =
                 "{\n" +
                         "  \"title\": \"Super Book\",\n" +
                         "  \"author\": \"Super Author\"\n" +
                         "}";
 
         String gsonStr = gson.toJson(book);
-        JSONAssert.assertEquals(expGson, gsonStr, true);
-
-        String expJackson =
-                "{\n" +
-                        "  \"title\" : \"Super Book\",\n" +
-                        "  \"author\" : \"Super Author\"\n" +
-                        "}";
+        JSONAssert.assertEquals(expOrdered, gsonStr, true);
 
         String jacksonStr = jackson.writeValueAsString(book);
-        JSONAssert.assertEquals(expJackson, jacksonStr, true);
+        JSONAssert.assertEquals(expOrdered, jacksonStr, true);
 
         String expLexic =
                 "{\n" +
