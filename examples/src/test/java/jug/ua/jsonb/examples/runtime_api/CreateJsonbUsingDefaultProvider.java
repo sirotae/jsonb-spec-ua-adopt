@@ -15,9 +15,8 @@ import static org.junit.Assert.assertNotNull;
 public class CreateJsonbUsingDefaultProvider {
 
     @Test
-    public void createJsonbViaProvider() {
-        JsonbBuilder builder = JsonbProvider.provider().create();
-        Jsonb jsonb = builder.build();
+    public void createJsonbViaBuilderShortcut() {
+        Jsonb jsonb = JsonbBuilder.create();
         assertNotNull(jsonb);
     }
 
@@ -29,18 +28,19 @@ public class CreateJsonbUsingDefaultProvider {
     }
 
     @Test
-    public void createJsonbViaBuilderShortcut() {
-        Jsonb jsonb = JsonbBuilder.create();
-        assertNotNull(jsonb);
-    }
-
-
-    @Test
     public void createJsonbViaBuilderWithConfig() {
         Jsonb jsonb = JsonbBuilder.newBuilder()
                 .withConfig(new JsonbConfig().toJsonFormatting(true))
                 .build();
         assertNotNull(jsonb);
     }
+
+    @Test
+    public void createJsonbViaProvider() {
+        JsonbBuilder builder = JsonbProvider.provider().create();
+        Jsonb jsonb = builder.build();
+        assertNotNull(jsonb);
+    }
+
 
 }
