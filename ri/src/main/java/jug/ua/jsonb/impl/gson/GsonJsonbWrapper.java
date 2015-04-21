@@ -33,6 +33,9 @@ public class GsonJsonbWrapper implements Jsonb{
         if (pretty!=null && Boolean.TRUE.equals(pretty)){
             builder.setPrettyPrinting();
         }
+
+        builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
         return builder;
     }
 
