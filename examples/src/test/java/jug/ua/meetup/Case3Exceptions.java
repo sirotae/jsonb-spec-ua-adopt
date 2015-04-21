@@ -1,33 +1,28 @@
 package jug.ua.meetup;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.owlike.genson.Genson;
-import com.owlike.genson.GensonBuilder;
 import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.fail;
-
 /**
  * Created by Olena_Syrota on 4/19/2015.
- *
+ * <p>
  * scenario
  * - demonstrate different exceptions for not well formed json
  */
 public class Case3Exceptions {
 
-    // gson
-    private Gson gson = new GsonBuilder().create();
+    //GSON
+    private Gson gson = new Gson();
 
-    //jackson, no builder pattern used
+    //JACKSON
     private ObjectMapper jackson = new ObjectMapper();
 
-    // genson
-    private Genson genson = new GensonBuilder().create();
+    //GENSON
+    private Genson genson = new Genson();
 
 
     @Test(expected = com.google.gson.JsonSyntaxException.class)
@@ -35,12 +30,12 @@ public class Case3Exceptions {
         gson.fromJson("[1,2", int[].class);
     }
 
-    @Test(expected = JsonParseException.class)
+    @Test(expected = com.fasterxml.jackson.databind.JsonMappingException.class)
     public void jacksonNotWellFormedJson() throws IOException {
         jackson.readValue("[1,2", int[].class);
     }
 
-    @Test(expected=com.owlike.genson.JsonBindingException.class)
+    @Test(expected = com.owlike.genson.JsonBindingException.class)
     public void gensonNotWellFormedJson() {
         genson.deserialize("[1,2", int[].class);
     }

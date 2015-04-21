@@ -1,12 +1,10 @@
 package jug.ua.meetup;
 
-import com.fasterxml.jackson.databind.DeserializationConfig;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.owlike.genson.Genson;
-import com.owlike.genson.GensonBuilder;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -23,40 +21,41 @@ import static org.junit.Assert.assertEquals;
  */
 public class Case4Nulls {
 
-    // gson
-    private Gson gson = new GsonBuilder().create();
+    //GSON
+    private Gson gson = new Gson();
 
-    //jackson, no builder pattern used
-    private ObjectMapper jackson = new ObjectMapper();
-            //.configure(DeserializationConfig.Feature.FAIL_ON_NULL_FOR_PRIMITIVES, true);
+    //JACKSON
+    private ObjectMapper jackson = new ObjectMapper()
+            .configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, true);
 
-    // genson
-    private Genson genson = new GensonBuilder().create();
+    //GENSON
+    private Genson genson = new Genson();
 
 
     @Test
     public void gsonDeserNullPrimitive() {
         String val = "{\"primitive\":null}";
-        ClazzWithPrimitive ins = gson.fromJson(val, ClazzWithPrimitive.class);
+        ClassWithPrimitive ins = gson.fromJson(val, ClassWithPrimitive.class);
         assertEquals(0, ins.getPrimitive());
     }
 
     @Test(expected = JsonMappingException.class)
     public void jacksonDeserNullPrimitive() throws IOException {
         String val = "{\"primitive\":null}";
-        ClazzWithPrimitive ins = jackson.readValue(val, ClazzWithPrimitive.class);
+        ClassWithPrimitive ins = jackson.readValue(val, ClassWithPrimitive.class);
         assertEquals(0, ins.getPrimitive());
     }
 
     @Test()
     public void gensonDeserNullPrimitive() throws IOException {
         String val = "{\"primitive\":null}";
-        ClazzWithPrimitive ins = genson.deserialize(val, ClazzWithPrimitive.class);
+        ClassWithPrimitive ins = genson.deserialize(val, ClassWithPrimitive.class);
         assertEquals(0, ins.getPrimitive());
     }
 
 
-    public static class ClazzWithPrimitive {
+    public static class ClassWithPrimitive {
+
         private int primitive;
 
         public int getPrimitive() {
