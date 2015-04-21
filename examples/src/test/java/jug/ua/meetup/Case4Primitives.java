@@ -94,7 +94,7 @@ public class Case4Primitives {
         assertEquals(0, ins.getPrimitive());
     }
 
-    @Test()
+    @Test
     public void gensonDeserNullPrimitive() throws IOException {
         String val = "{\"primitive\":null}";
         ClassWithPrimitive ins = genson.deserialize(val, ClassWithPrimitive.class);
