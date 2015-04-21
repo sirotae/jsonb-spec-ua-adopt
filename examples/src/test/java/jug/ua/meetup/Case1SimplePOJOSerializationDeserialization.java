@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
  * scenario:
  * simple serialization
  *  - oops, different fields order
+ *  - constructors, setters for private fields
  */
 public class Case1SimplePOJOSerializationDeserialization {
 
