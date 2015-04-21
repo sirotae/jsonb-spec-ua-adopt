@@ -1,7 +1,7 @@
 package jug.ua.meetup;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationConfig;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.owlike.genson.Genson;
@@ -21,20 +21,21 @@ import static org.junit.Assert.assertEquals;
  */
 public class Case2CustomizingInstance {
 
-    // gson
+    //GSON
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    //jackson, no builder pattern used
-    private ObjectMapper jackson = new ObjectMapper();
-            //.configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
+    //JACKSON
+    //No builder available. ObjectMapper class is all in one.
+    private ObjectMapper jackson = new ObjectMapper()
+            .configure(SerializationFeature.INDENT_OUTPUT, true);
 
-    // genson
+    //GENSON
     private Genson genson = new GensonBuilder().useIndentation(true).create();
 
 
     // demonstrates that every mapper has own notion of "pretty"
     @Test
-    public void indentedSerializeTest() throws Exception {
+    public void indentedSerializationExample() throws Exception {
         Book book = new Book("Super Book", "Super Author");
 
         String expGson =
@@ -47,9 +48,9 @@ public class Case2CustomizingInstance {
         assertEquals(expGson, gsonStr);
 
         String expJackson =
-                "{\r\n" +
-                        "  \"title\" : \"Super Book\",\r\n" +
-                        "  \"author\" : \"Super Author\"\r\n" +
+                "{\n" +
+                        "  \"title\" : \"Super Book\",\n" +
+                        "  \"author\" : \"Super Author\"\n" +
                         "}";
 
         String jacksonStr = jackson.writeValueAsString(book);
