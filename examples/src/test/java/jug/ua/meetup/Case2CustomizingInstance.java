@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.owlike.genson.Genson;
 import com.owlike.genson.GensonBuilder;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 import static org.junit.Assert.assertEquals;
 
@@ -45,7 +46,7 @@ public class Case2CustomizingInstance {
                         "}";
 
         String gsonStr = gson.toJson(book);
-        assertEquals(expGson, gsonStr);
+        JSONAssert.assertEquals(expGson, gsonStr, true);
 
         String expJackson =
                 "{\n" +
@@ -54,8 +55,7 @@ public class Case2CustomizingInstance {
                         "}";
 
         String jacksonStr = jackson.writeValueAsString(book);
-        assertEquals(expJackson, jacksonStr);
-
+        JSONAssert.assertEquals(expJackson, jacksonStr, true);
 
         String expLexic =
                 "{\n" +
@@ -63,7 +63,7 @@ public class Case2CustomizingInstance {
                         "  \"title\":\"Super Book\"\n" +
                         "}";
         String gensonStr = genson.serialize(book);
-        assertEquals(expLexic, gensonStr);
+        JSONAssert.assertEquals(expLexic, gensonStr, true);
     }
 
 }
