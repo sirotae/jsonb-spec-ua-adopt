@@ -1,13 +1,11 @@
 package jug.ua.meetup;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.owlike.genson.Genson;
 import com.owlike.genson.GensonBuilder;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -37,7 +35,7 @@ public class Case3Exceptions {
         gson.fromJson("[1,2", int[].class);
     }
 
-    @Test(expected = org.codehaus.jackson.JsonParseException.class)
+    @Test(expected = JsonParseException.class)
     public void jacksonNotWellFormedJson() throws IOException {
         jackson.readValue("[1,2", int[].class);
     }

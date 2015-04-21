@@ -1,15 +1,14 @@
 package jug.ua.meetup;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationConfig;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.owlike.genson.Genson;
 import com.owlike.genson.GensonBuilder;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static jug.ua.meetup.POJO.Book;
 
 /**
  * Created by Olena_Syrota on 4/18/2015.
@@ -26,8 +25,8 @@ public class Case2CustomizingInstance {
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     //jackson, no builder pattern used
-    private ObjectMapper jackson = new ObjectMapper()
-            .configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
+    private ObjectMapper jackson = new ObjectMapper();
+            //.configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
 
     // genson
     private Genson genson = new GensonBuilder().useIndentation(true).create();
@@ -36,9 +35,7 @@ public class Case2CustomizingInstance {
     // demonstrates that every mapper has own notion of "pretty"
     @Test
     public void indentedSerializeTest() throws Exception {
-        Book book = new Book();
-        book.setAuthor("Super Author");
-        book.setTitle("Super Book");
+        Book book = new Book("Super Book", "Super Author");
 
         String expGson =
                 "{\n" +

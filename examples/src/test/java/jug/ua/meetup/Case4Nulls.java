@@ -1,11 +1,12 @@
 package jug.ua.meetup;
 
+import com.fasterxml.jackson.databind.DeserializationConfig;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.owlike.genson.Genson;
 import com.owlike.genson.GensonBuilder;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -26,9 +27,8 @@ public class Case4Nulls {
     private Gson gson = new GsonBuilder().create();
 
     //jackson, no builder pattern used
-    private ObjectMapper jackson = new ObjectMapper()
-            .configure(DeserializationConfig.Feature.FAIL_ON_NULL_FOR_PRIMITIVES, true)
-            ;
+    private ObjectMapper jackson = new ObjectMapper();
+            //.configure(DeserializationConfig.Feature.FAIL_ON_NULL_FOR_PRIMITIVES, true);
 
     // genson
     private Genson genson = new GensonBuilder().create();
@@ -41,7 +41,7 @@ public class Case4Nulls {
         assertEquals(0, ins.getPrimitive());
     }
 
-    @Test(expected = org.codehaus.jackson.map.JsonMappingException.class)
+    @Test(expected = JsonMappingException.class)
     public void jacksonDeserNullPrimitive() throws IOException {
         String val = "{\"primitive\":null}";
         ClazzWithPrimitive ins = jackson.readValue(val, ClazzWithPrimitive.class);
