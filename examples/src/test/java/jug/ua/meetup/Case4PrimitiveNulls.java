@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
  *   deserializing null to primitive
  *   - jackson can fail on nulls
  */
-public class Case4Nulls {
+public class Case4PrimitiveNulls {
 
     //GSON
     private Gson gson = new Gson();

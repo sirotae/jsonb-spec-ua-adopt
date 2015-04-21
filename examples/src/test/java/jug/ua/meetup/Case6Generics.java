@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
  * scenario
  * - implementing deser on the basis of TypeToken
  */
-public class Case5Generics {
+public class Case6Generics {
 
     private Gson gson;
 
