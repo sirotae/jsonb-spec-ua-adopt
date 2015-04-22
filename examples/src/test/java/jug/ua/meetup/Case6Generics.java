@@ -1,13 +1,11 @@
 package jug.ua.meetup;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.owlike.genson.GenericType;
 import com.owlike.genson.Genson;
-import com.owlike.genson.GensonBuilder;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -41,22 +39,25 @@ public class Case6Generics {
                 "  \"title\": \"Super Book2\",\n" +
                 "  \"author\": \"Super Author2\"\n" +
                 "}]";
-        List<Book> exp = new ArrayList<Book>();
+
+        //GSON
+        Type fooType = new TypeToken<List<Book>>(){}.getType();
+        List<Book> gsonRes = gson.fromJson(jsonString, fooType);
+
+        //JACKSON
+        JavaType collectionType = jackson.getTypeFactory().constructCollectionType(List.class, Book.class);
+        List<Book> jacksonRes = jackson.readValue(jsonString, collectionType);
+
+        //GENSON
+        List<Book> gensonRes = genson.deserialize(jsonString, new GenericType<List<Book>>(){});
+
+        List<Book> exp = new ArrayList<>();
         exp.add(new Book("Super Book1", "Super Author1"));
         exp.add(new Book("Super Book2", "Super Author2"));
 
-
-        Type fooType = new TypeToken<List<Book>>(){}.getType();
-        List<Book> gsonRes = gson.fromJson(jsonString, fooType);
         assertEquals(exp, gsonRes);
-
-        JavaType collectionType = jackson.getTypeFactory().constructCollectionType(List.class, Book.class);
-        List<Book> jacksonRes = jackson.readValue(jsonString, collectionType);
         assertEquals(exp, jacksonRes);
-
-        List<Book> gensonRes = genson.deserialize(jsonString, new GenericType<List<Book>>(){});
         assertEquals(exp, gensonRes);
-
     }
 
 }

@@ -1,7 +1,6 @@
 package jug.ua.meetup;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.*;
@@ -24,15 +23,15 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Olena_Syrota on 4/18/2015.
- *
+ * <p>
  * scenario:
- *  custom ser/deser for point to be a JSON strings "5,8" rather than objects like {"x":5,"y":8}.
+ * custom ser/deser for point to be a JSON strings "5,8" rather than objects like {"x":5,"y":8}.
  */
 public class Case7CustomSerializer {
 
     //GSON
     private Gson gson = new GsonBuilder()
-            .registerTypeAdapter(Point.class, new GsonPointAdapter ())
+            .registerTypeAdapter(Point.class, new GsonPointAdapter())
             .create();
 
     //JACKSON
@@ -40,59 +39,70 @@ public class Case7CustomSerializer {
 
     //GENSON
     private Genson genson = new GensonBuilder()
-            .withConverters(new GensonPersonConverter())
+            .withConverters(new GensonPointConverter())
             .create();
 
 
     @Test
     public void serializePoint() throws JsonProcessingException {
-        Point val = new Point(5,5);
-        String exp = "\"5,5\"";
 
+        Point val = new Point(5, 5);
+
+        //GSON
         String gsonRes = gson.toJson(val);
-        assertEquals(exp, gsonRes);
 
+        //JACKSON
         String jacksonRes = jackson.writeValueAsString(val);
-        assertEquals(exp, jacksonRes);
 
+        //GENSON
         String gensonRes = genson.serialize(val);
-        assertEquals(exp, gensonRes);
 
+        String exp = "\"5,5\"";
+        assertEquals(exp, gsonRes);
+        assertEquals(exp, jacksonRes);
+        assertEquals(exp, gensonRes);
     }
 
     @Test
     public void deserializePoint() throws IOException {
+
         String val = "\"5,5\"";
-        Point exp = new Point(5,5);
 
         Point gsonRes = gson.fromJson(val, Point.class);
-        assertEquals(exp, gsonRes);
 
         Point jacksonRes = jackson.readValue(val, Point.class);
-        assertEquals(exp, jacksonRes);
 
         Point gensonRes = genson.deserialize(val, Point.class);
-        assertEquals(exp, gensonRes);
 
+        Point exp = new Point(5, 5);
+        assertEquals(exp, gsonRes);
+        assertEquals(exp, jacksonRes);
+        assertEquals(exp, gensonRes);
     }
 
     @JsonSerialize(using = JacksonPointSerializer.class)
-    @JsonDeserialize(using=JacksonPointDeserializer.class)
+    @JsonDeserialize(using = JacksonPointDeserializer.class)
     public static class Point {
-        private int x,y;
+
+        private int x, y;
+
         public Point(int x, int y) {
             this.x = x;
             this.y = y;
         }
+
         public int getX() {
             return x;
         }
+
         public void setX(int x) {
             this.x = x;
         }
+
         public int getY() {
             return y;
         }
+
         public void setY(int y) {
             this.y = y;
         }
@@ -112,6 +122,7 @@ public class Case7CustomSerializer {
     }
 
     public static class GsonPointAdapter extends TypeAdapter<Point> {
+
         public Point read(JsonReader reader) throws IOException {
             if (reader.peek() == JsonToken.NULL) {
                 reader.nextNull();
@@ -124,12 +135,12 @@ public class Case7CustomSerializer {
             return new Point(x, y);
         }
 
-        public void write(JsonWriter writer, Point value) throws IOException {
-            if (value == null) {
+        public void write(JsonWriter writer, Point p) throws IOException {
+            if (p == null) {
                 writer.nullValue();
                 return;
             }
-            String xy = value.getX() + "," + value.getY();
+            String xy = p.getX() + "," + p.getY();
             writer.value(xy);
         }
     }
@@ -137,42 +148,31 @@ public class Case7CustomSerializer {
 
     public static class JacksonPointSerializer extends JsonSerializer<Point> {
         @Override
-        public void serialize(Point value, JsonGenerator jgen, SerializerProvider provider)
+        public void serialize(Point value, JsonGenerator generator, SerializerProvider provider)
                 throws IOException, JsonProcessingException {
-            StringBuffer sb = new StringBuffer();
-            sb.append(value.getX());
-            sb.append(",");
-            sb.append(value.getY());
-            jgen.writeString(sb.toString());
+            generator.writeString(value.getX()+","+value.getY());
         }
     }
 
     public static class JacksonPointDeserializer extends JsonDeserializer<Point> {
-
         @Override
-        public Point deserialize(JsonParser jp, DeserializationContext ctxt)
+        public Point deserialize(JsonParser parser, DeserializationContext context)
                 throws IOException, JsonProcessingException {
-            String xy = jp.getValueAsString();
+            String xy = parser.getValueAsString();
             String[] parts = xy.split(",");
             int x = Integer.parseInt(parts[0]);
             int y = Integer.parseInt(parts[1]);
-
             return new Point(x, y);
         }
     }
 
-    public static class GensonPersonConverter implements com.owlike.genson.Converter<Point> {
+    public static class GensonPointConverter implements com.owlike.genson.Converter<Point> {
 
-        public void serialize(Point p, com.owlike.genson.stream.ObjectWriter writer, Context ctx) throws Exception {
-            StringBuffer sb = new StringBuffer();
-            sb.append(p.getX());
-            sb.append(",");
-            sb.append(p.getY());
-
-            writer.writeString(sb.toString());
+        public void serialize(Point p, com.owlike.genson.stream.ObjectWriter writer, Context context) throws Exception {
+            writer.writeString(p.getX()+","+p.getY());
         }
 
-        public Point deserialize(com.owlike.genson.stream.ObjectReader reader, Context ctx) throws Exception {
+        public Point deserialize(com.owlike.genson.stream.ObjectReader reader, Context context) throws Exception {
             String xy = reader.valueAsString();
             String[] parts = xy.split(",");
             int x = Integer.parseInt(parts[0]);

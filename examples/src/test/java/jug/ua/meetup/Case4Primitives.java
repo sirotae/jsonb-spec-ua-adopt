@@ -1,6 +1,5 @@
 package jug.ua.meetup;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -103,6 +102,7 @@ public class Case4Primitives {
 
 
     public static class ClassWithPrimitive {
+
         private int primitive;
 
         public int getPrimitive() {
@@ -112,7 +112,5 @@ public class Case4Primitives {
             this.primitive = primitive;
         }
     }
-
-
 
 }
