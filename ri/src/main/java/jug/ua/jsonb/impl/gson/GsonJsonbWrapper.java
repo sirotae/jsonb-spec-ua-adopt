@@ -4,6 +4,7 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonWriter;
 
+import javax.activation.UnsupportedDataTypeException;
 import javax.json.Json;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
@@ -12,7 +13,6 @@ import javax.json.bind.JsonbConfig;
 import javax.json.bind.JsonbException;
 import java.io.*;
 import java.lang.reflect.Type;
-import java.nio.file.Files;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -29,8 +29,8 @@ public class GsonJsonbWrapper implements Jsonb{
     private static GsonBuilder newBuilderFromConfig (JsonbConfig config) {
         GsonBuilder builder = new GsonBuilder();
 
-        Boolean pretty = (Boolean) config.getProperty(JsonbConfig.JSONB_TO_JSON_FORMATTING);
-        if (pretty!=null && Boolean.TRUE.equals(pretty)){
+        Optional<Object> pretty = config.getProperty(JsonbConfig.JSONB_FORMATTING);
+        if (pretty.isPresent()){
             builder.setPrettyPrinting();
         }
 
@@ -85,9 +85,28 @@ public class GsonJsonbWrapper implements Jsonb{
     }
 
     @Override
-    public <T> T fromJson(Reader reader, Class<T> type) throws JsonbException {
+    public <T> T fromJson(Readable readable, Class<T> type) throws JsonbException {
         try{
-            return gson.fromJson(reader, type);
+            if (readable instanceof Reader) {
+                return gson.fromJson((Reader) readable, type);
+            }else{
+                throw new UnsupportedOperationException();
+            }
+        } catch (JsonIOException io){
+            throw new JsonbException("Error occurred while reading the file:", io);
+        } catch (JsonSyntaxException | IllegalArgumentException ex){
+            throw new JsonbException("JSON not compatible with specified type:", ex);
+        }
+    }
+
+    @Override
+    public <T> T fromJson(Readable readable, Type runtimeType) throws JsonbException {
+        try{
+            if (readable instanceof Reader) {
+                return gson.fromJson((Reader)readable, runtimeType);
+            }else{
+                throw new UnsupportedOperationException();
+            }
         } catch (JsonIOException io){
             throw new JsonbException("Error occurred while reading the file:", io);
         } catch (JsonSyntaxException | IllegalArgumentException ex){
@@ -101,12 +120,8 @@ public class GsonJsonbWrapper implements Jsonb{
     }
 
     @Override
-    public <T> T fromJson(File file, Class<T> type) throws JsonbException {
-        try{
-            return fromJson(Files.newBufferedReader(file.toPath()), type);
-        } catch (IOException e) {
-            throw new JsonbException("Error occurred while opening the file:", e);
-        }
+    public <T> T fromJson(InputStream stream, Type runtimeType) throws JsonbException {
+        return fromJson(new InputStreamReader(stream), runtimeType);
     }
 
     @Override
@@ -128,22 +143,23 @@ public class GsonJsonbWrapper implements Jsonb{
     }
 
     @Override
-    public void toJson(Object object, File file) throws JsonbException {
-        try {
-            gson.toJson(object, Files.newBufferedWriter(file.toPath()));
-        } catch (IOException e) {
-            throw new JsonbException("Error occurred while opening the file:", e);
-        }
+    public void toJson(Object object, Appendable appendable) throws JsonbException {
+        gson.toJson(object, appendable);
     }
 
     @Override
-    public void toJson(Object object, Writer writer) throws JsonbException {
-        gson.toJson(object, writer);
+    public void toJson(Object object, Type runtimeType, Appendable appendable) throws JsonbException {
+        gson.toJson(object, runtimeType, appendable);
     }
 
     @Override
     public void toJson(Object object, OutputStream stream) throws JsonbException {
         gson.toJson(object, new OutputStreamWriter(stream));
+    }
+
+    @Override
+    public void toJson(Object object, Type runtimeType, OutputStream stream) throws JsonbException {
+        gson.toJson(object, runtimeType, new OutputStreamWriter(stream));
     }
 
     private <T> TypeAdapter<T> customTypeAdapterForOptional(Gson gson, TypeToken<T> type) {

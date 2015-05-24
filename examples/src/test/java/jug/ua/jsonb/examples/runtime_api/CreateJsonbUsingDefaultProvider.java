@@ -30,7 +30,7 @@ public class CreateJsonbUsingDefaultProvider {
     @Test
     public void createJsonbViaBuilderWithConfig() {
         Jsonb jsonb = JsonbBuilder.newBuilder()
-                .withConfig(new JsonbConfig().toJsonFormatting(true))
+                .withConfig(new JsonbConfig().withFormatting(true))
                 .build();
         assertNotNull(jsonb);
     }
