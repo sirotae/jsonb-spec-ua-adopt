@@ -1,5 +1,6 @@
 package jug.ua.jsonb.examples.generics_mapping;
 
+import com.google.gson.reflect.TypeToken;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -39,7 +40,7 @@ public class GenericsMappingTest {
     @Test
     public void serializeFunctionalInterfaceImplementations() throws Exception {
         FunctionalInterface<String> myFunction = () -> "value1";
-        assertEquals("{}", jsonb.toJson(myFunction));
+        assertEquals("{\"value\":\"value1\"}", jsonb.toJson(myFunction));
 
         myFunction = new FunctionalInterface<String>() {
             private String value = "initValue";
@@ -108,6 +109,70 @@ public class GenericsMappingTest {
         assertEquals("{\"boundedSet\":[3],\"superList\":[{\"radius\":2.5}]}", jsonb.toJson(boundedGenericClass));
     }
 
+    @Test
+    public void serializeListOfOptionals() throws Exception {
+        List<Optional<String>> expected = Arrays.asList(Optional.empty(), Optional.ofNullable("first"), Optional.of("second"));
+        String json = jsonb.toJson(expected);
+        assertEquals("[null,\"first\",\"second\"]",json);
+    }
+
+    @Test
+    public void deserializeIntoStandardGenericClass() throws Exception {
+        MyGenericClass<String, Integer> myGenericInstance = jsonb.fromJson("{\"field1\":\"value1\", \"field2\":1}",
+                new TypeToken<MyGenericClass<String, Integer>>(){}.getType());
+        assertEquals("value1", myGenericInstance.field1);
+        assertEquals(1, myGenericInstance.field2.intValue());
+
+        MyGenericClass<MyGenericClass<String, String>, Integer> myGenericClass = jsonb.fromJson("{\"field1\":{\"field1\":\"f1\",\"field2\":\"f2\"},\"field2\":3}",
+                new TypeToken<MyGenericClass<MyGenericClass<String, String>, Integer>>(){}.getType());
+        assertEquals("f1", myGenericClass.field1.field1);
+        assertEquals("f2", myGenericClass.field1.field2);
+        assertEquals(3, myGenericClass.field2.intValue());
+    }
+
+    @Test
+    public void deserializeIntoCyclicGenericClass() throws Exception {
+        MyCyclicGenericClass<CyclicSubClass> myCyclicGenericClass = jsonb.fromJson("{\"field1\":{\"subField\":\"subFieldValue\"}}",
+                new TypeToken<MyCyclicGenericClass<CyclicSubClass>>(){}.getType());
+        assertEquals("subFieldValue", myCyclicGenericClass.field1.subField);
+    }
+
+    @Test
+    public void deserializeIntoNestedGenericClass() throws Exception {
+        NestedGenericConcreteClass nestedGenericConcreteClass = jsonb.fromJson("{\"list\":[\"value1\"]}", NestedGenericConcreteClass.class);
+        assertEquals("value1", nestedGenericConcreteClass.list.get(0));
+    }
+
+    @Test
+    public void deserializeIntoWildcardGenericClass() throws Exception {
+        GenericWithWildcardClass genericWithWildcardClass = jsonb.fromJson("{\"wildcardList\":[{\"k1\":\"v1\"}]}", GenericWithWildcardClass.class);
+        assert(genericWithWildcardClass.wildcardList.get(0) instanceof Map);
+    }
+
+    @Ignore("Gson default numeric type is Double, where JSON-B spec tends to Integer")
+    @Test
+    public void deserializeIntoMultiLevelGenericClass() throws Exception {
+        MyGenericClass multiLevelGeneric = jsonb.fromJson("{\"field1\":{\"field1\":\"f1\",\"field2\":\"f2\"},\"field2\":3}", MyGenericClass.class);
+
+        assert(multiLevelGeneric.field1 instanceof Map);
+        assert(multiLevelGeneric.field2 instanceof Integer);
+    }
+
+    @Test
+    public void deserializeIntoBoundedGenericClass() throws Exception {
+        BoundedGenericClass<HashSet<Integer>, Circle> boundedGeneric = jsonb.fromJson("{\"boundedSet\":[3],\"superList\":[{\"radius\":2.5}]}",
+                new TypeToken<BoundedGenericClass<HashSet<Integer>, Circle>>(){}.getType());
+    }
+
+    //For some reason in spec they are expecting JsonbException here, however it's more likely a bug
+    @Test(expected = ClassCastException.class)
+    public void runtimeClassCastException() throws Exception {
+        BoundedGenericClass<HashSet<Integer>, Circle> boundedGeneric = jsonb.fromJson("{\"boundedSet\":[3],\"superList\":[{\"radius\":2.5}]}",
+                new TypeToken<BoundedGenericClass<HashSet<Double>, Circle>>(){}.getType());
+        HashSet<Integer> intSet = boundedGeneric.boundedSet;
+        Integer intValue = intSet.iterator().next();
+    }
+
     static class BoundedGenericClass<T extends Set<? extends Number>, U> {
         public T boundedSet;
         public List<? super U> superList;
@@ -115,7 +180,7 @@ public class GenericsMappingTest {
         public BoundedGenericClass() {}
     }
 
-    static interface FunctionalInterface<T> {
+    interface FunctionalInterface<T> {
         public T getValue();
     }
 

@@ -60,7 +60,7 @@ public class OptionalMappingTest {
         assertEquals("optionalString", stringValue.get());
 
         Optional<String> nullStringValue = jsonb.fromJson("null", Optional.class);
-        assertNotNull(stringValue);
+        assertNotNull(nullStringValue);
         assertFalse(nullStringValue.isPresent());
     }
 
