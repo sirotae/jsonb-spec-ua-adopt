@@ -3,8 +3,9 @@ package jug.ua.jsonb.impl.gson;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonWriter;
+import jug.ua.jsonb.impl.gson.typeadapters.GregorianCalendarTypeAdapter;
+import jug.ua.jsonb.impl.gson.typeadapters.DateTypeAdapter;
 
-import javax.activation.UnsupportedDataTypeException;
 import javax.json.Json;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
@@ -13,8 +14,7 @@ import javax.json.bind.JsonbConfig;
 import javax.json.bind.JsonbException;
 import java.io.*;
 import java.lang.reflect.Type;
-import java.util.Optional;
-import java.util.OptionalInt;
+import java.util.*;
 
 /**
  * Wrapper over Gson class to provide JSON-B compatible implementations
@@ -34,8 +34,6 @@ public class GsonJsonbWrapper implements Jsonb{
             builder.setPrettyPrinting();
         }
 
-        builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-
         return builder;
     }
 
@@ -53,6 +51,8 @@ public class GsonJsonbWrapper implements Jsonb{
 
         gson = builder
                .registerTypeAdapterFactory(this::customTypeAdapterForOptional)
+               .registerTypeAdapter(Date.class, new DateTypeAdapter())
+               .registerTypeHierarchyAdapter(Calendar.class, new GregorianCalendarTypeAdapter())
                .create();
     }
 
@@ -167,6 +167,10 @@ public class GsonJsonbWrapper implements Jsonb{
             return new OptionalTypeAdapter(gson);
         }else if (type.getRawType() == OptionalInt.class){
             return (TypeAdapter<T>)new OptionalIntTypeAdapter(gson);
+        }else if (type.getRawType() == OptionalLong.class){
+            return (TypeAdapter<T>)new OptionalLongTypeAdapter(gson);
+        }else if (type.getRawType() == OptionalDouble.class){
+            return (TypeAdapter<T>)new OptionalDoubleTypeAdapter(gson);
         }else{
             return null;
         }
@@ -227,6 +231,64 @@ public class GsonJsonbWrapper implements Jsonb{
                 return OptionalInt.empty();
             } else {
                 return OptionalInt.of(object);
+            }
+        }
+    }
+
+    static class OptionalLongTypeAdapter extends TypeAdapter<OptionalLong>{
+
+        private Gson gson;
+
+        OptionalLongTypeAdapter(Gson gson) {
+            this.gson = gson;
+        }
+
+        @Override
+        public void write(JsonWriter out, OptionalLong value) throws IOException {
+            if (value != null && value.isPresent()) {
+                gson.getAdapter(long.class).write(out, value.getAsLong());
+            }else{
+                out.nullValue();
+            }
+        }
+
+        @Override
+        public OptionalLong read(com.google.gson.stream.JsonReader in) throws IOException {
+            TypeAdapter<Long> typeAdapter = gson.getAdapter(long.class);
+            Long object = typeAdapter.read(in);
+            if (object == null) {
+                return OptionalLong.empty();
+            } else {
+                return OptionalLong.of(object);
+            }
+        }
+    }
+
+    static class OptionalDoubleTypeAdapter extends TypeAdapter<OptionalDouble>{
+
+        private Gson gson;
+
+        OptionalDoubleTypeAdapter(Gson gson) {
+            this.gson = gson;
+        }
+
+        @Override
+        public void write(JsonWriter out, OptionalDouble value) throws IOException {
+            if (value != null && value.isPresent()) {
+                gson.getAdapter(double.class).write(out, value.getAsDouble());
+            }else{
+                out.nullValue();
+            }
+        }
+
+        @Override
+        public OptionalDouble read(com.google.gson.stream.JsonReader in) throws IOException {
+            TypeAdapter<Double> typeAdapter = gson.getAdapter(double.class);
+            Double object = typeAdapter.read(in);
+            if (object == null) {
+                return OptionalDouble.empty();
+            } else {
+                return OptionalDouble.of(object);
             }
         }
     }
