@@ -5,7 +5,9 @@ import org.junit.Test;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import java.util.Optional;
+import java.util.OptionalDouble;
 import java.util.OptionalInt;
+import java.util.OptionalLong;
 
 import static org.junit.Assert.*;
 
@@ -50,6 +52,14 @@ public class OptionalMappingTest {
         //OptionalInt
         assertEquals("1", jsonb.toJson(OptionalInt.of(1)));
         assertEquals("null", jsonb.toJson(OptionalInt.empty()));
+
+        //OptionalLong
+        assertEquals("1", jsonb.toJson(OptionalLong.of(1)));
+        assertEquals("null", jsonb.toJson(OptionalLong.empty()));
+
+        //OptionalDouble
+        assertEquals("1.0", jsonb.toJson(OptionalDouble.of(1)));
+        assertEquals("null", jsonb.toJson(OptionalDouble.empty()));
     }
 
     @Test
@@ -89,6 +99,23 @@ public class OptionalMappingTest {
 
         OptionalInt emptyOptionalInt = jsonb.fromJson("null", OptionalInt.class);
         assertFalse(emptyOptionalInt.isPresent());
+
+        //OptionalLong
+        OptionalLong optionalLong = jsonb.fromJson("1", OptionalLong.class);
+        assertTrue(optionalLong.isPresent());
+        assertTrue(optionalLong.getAsLong() == 1);
+
+        OptionalLong emptyOptionalLong = jsonb.fromJson("null", OptionalLong.class);
+        assertFalse(emptyOptionalLong.isPresent());
+
+        //OptionalDouble
+        OptionalDouble optionalDouble = jsonb.fromJson("1.0", OptionalDouble.class);
+        assertTrue(optionalDouble.isPresent());
+        assertTrue(optionalDouble.getAsDouble() == 1);
+
+        OptionalDouble emptyOptionalDouble = jsonb.fromJson("null", OptionalDouble.class);
+        assertFalse(emptyOptionalDouble.isPresent());
+
     }
 
     static class OptionalClass {
