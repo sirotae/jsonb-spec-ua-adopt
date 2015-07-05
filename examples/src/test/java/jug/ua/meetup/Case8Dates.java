@@ -11,11 +11,15 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Olena_Syrota on 6/3/2015.
+ *
+ * discussion:
+ * - ser/deser standard Java Date/Time/Zones types
  */
 public class Case8Dates {
 
@@ -34,20 +38,48 @@ public class Case8Dates {
     @Test
     public void serializeDate() throws JsonProcessingException {
 
-        Date val = new Calendar.Builder().setDate(2015, 06, 01).build().getTime();
+        Date date = new GregorianCalendar(2015, 6, 1).getTime();
 
         //GSON
-        String gsonRes = gson.toJson(val);
+        String gsonRes = gson.toJson(date);
 
         //JACKSON
-        String jacksonRes = jackson.writeValueAsString(val);
+        String jacksonRes = jackson.writeValueAsString(date);
 
         //GENSON
-        String gensonRes = genson.serialize(val);
+        String gensonRes = genson.serialize(date);
 
         System.out.println(gsonRes);
         System.out.println(jacksonRes);
         System.out.println(gensonRes);
+    }
+
+    @Test
+    public void serializePojoWithDate() throws Exception {
+        
+        PojoWithDate pojoWithDate = new PojoWithDate(new GregorianCalendar(2015, 6, 1).getTime());
+        
+        //GSON
+        String gsonRes = gson.toJson(pojoWithDate);
+
+        //JACKSON
+        String jacksonRes = jackson.writeValueAsString(pojoWithDate);
+
+        //GENSON
+        String gensonRes = genson.serialize(pojoWithDate);
+
+        System.out.println(gsonRes);
+        System.out.println(jacksonRes);
+        System.out.println(gensonRes);
+    }
+
+    static class PojoWithDate{
+        
+        public Date date;
+
+        public PojoWithDate(Date date) {
+            this.date = date;
+        }
     }
 
 }

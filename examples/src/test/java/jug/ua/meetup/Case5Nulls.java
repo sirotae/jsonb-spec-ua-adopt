@@ -11,6 +11,9 @@ import static org.junit.Assert.assertNull;
 
 /**
  * @author Oleg Tsal-Tsalko
+ *
+ * discussion:
+ * - ser/deser NULLs
  */
 public class Case5Nulls {
 

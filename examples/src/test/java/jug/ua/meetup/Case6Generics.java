@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
  * Created by Olena_Syrota on 4/18/2015.
  *
  * scenario
- * - implementing deser on the basis of TypeToken
+ * - should we add notion of TypeToken in Java???
  */
 public class Case6Generics {
 

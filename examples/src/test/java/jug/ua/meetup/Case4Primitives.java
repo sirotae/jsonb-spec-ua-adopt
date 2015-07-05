@@ -15,10 +15,9 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by Olena_Syrota on 4/19/2015.
  *
- * scenario:
- *   - ser/deser value
- *   - deserializing null to primitive
- *      - jackson can fail on nulls
+ * discussion:
+ *   - ser/deser simple value
+ *   - ser/deser Optional types
  */
 public class Case4Primitives {
 
@@ -34,7 +33,7 @@ public class Case4Primitives {
 
 
     @Test
-    public void gsonSerializeIntPrimitive() throws IOException {
+    public void serializeIntPrimitive() throws IOException {
         int val = 1;
         String exp = "1";
 
@@ -49,7 +48,7 @@ public class Case4Primitives {
     }
 
     @Test
-    public void gsonDeserializeIntPrimitive() throws IOException {
+    public void deserializeIntPrimitive() throws IOException {
         String val = "1";
         int exp = 1;
 
@@ -65,7 +64,7 @@ public class Case4Primitives {
 
 
     @Test
-    public void gsonDeserializeBoolTrue() throws IOException {
+    public void deserializeBoolTrue() throws IOException {
         String val = "true";
         boolean exp = true;
 

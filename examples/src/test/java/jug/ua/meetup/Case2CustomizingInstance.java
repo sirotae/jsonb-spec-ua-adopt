@@ -14,11 +14,9 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by Olena_Syrota on 4/18/2015.
  *
- * scenario:
- *  - create custom mapper instance via builder
- *      jackson - builder pattern is not used
- *  - oops, "pretty" notion is different
- *
+ * sdiscussion:
+ *  - create instance or use builder (SPI approach)
+ *  - how to provide customization of Jsonb instance
  */
 public class Case2CustomizingInstance {
 

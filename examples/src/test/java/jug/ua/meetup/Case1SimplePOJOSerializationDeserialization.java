@@ -10,10 +10,9 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by Olena_Syrota on 4/18/2015.
  *
- * scenario:
- * simple serialization
- *  - oops, different fields order
- *  - constructors, setters for private fields
+ * discussion:
+ *  - different fields order
+ *  - required default constructors, public setters/getters, public fields
  */
 public class Case1SimplePOJOSerializationDeserialization {
 
@@ -27,8 +26,6 @@ public class Case1SimplePOJOSerializationDeserialization {
     private Genson genson = new Genson();
     //private Genson genson = new GensonBuilder().useConstructorWithArguments(false).create();
 
-    // apache johnzone ?
-
     @Test
     public void simplePOJOSerialization() throws Exception {
         Book book = new Book("Super Book", "Super Author");
@@ -37,6 +34,7 @@ public class Case1SimplePOJOSerializationDeserialization {
         String gsonJson = gson.toJson(book);
 
         //JACKSON
+        //Requires public getters or public fields
         String jacksonJson = jackson.writeValueAsString(book);
 
         //GENSON
